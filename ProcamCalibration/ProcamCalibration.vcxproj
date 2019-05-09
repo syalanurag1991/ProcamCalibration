@@ -84,10 +84,10 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(OPENCV_BUILD)\include;$(KINECTSDK20_DIR)inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)depends\opencv_build\include;$(KINECTSDK20_DIR)inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(OPENCV_BUILD)\x64\vc14\lib;$(KINECTSDK20_DIR)Lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)depends\opencv_build\x64\vc14\lib;$(KINECTSDK20_DIR)Lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opencv_world343d.lib;Kinect20.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -123,7 +123,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="CalibrationHandler.cpp" />
+    <ClCompile Include="KinectWrapper.cpp" />
+    <ClCompile Include="ProcamCalibration.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CalibrationHandler.h" />
+    <ClInclude Include="KinectWrapper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

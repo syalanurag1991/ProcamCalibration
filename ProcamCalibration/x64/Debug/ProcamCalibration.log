@@ -1,2 +1,3 @@
-﻿  Main.cpp
-  ProcamCalibration.vcxproj -> D:\ProcamCalibration\x64\Debug\ProcamCalibration.exe
+﻿  ProcamCalibration.cpp
+c:\users\syalanurag\documents\procamcalibration\procamcalibration\procamcalibration.cpp(88): warning C4552: '&': operator has no effect; expected operator with side-effect
+  ProcamCalibration.vcxproj -> C:\Users\syalanurag\Documents\ProcamCalibration\x64\Debug\ProcamCalibration.exe
