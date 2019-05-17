@@ -43,24 +43,35 @@ void CalibrationHandler::CalculateAndSetChessboardSquareEdgeLengthInpixels() {
 	return;
 }
 
-void CalibrationHandler::CreateWindowsForDisplayingFrames() {
+void CalibrationHandler::CreateWindowsForDisplayingFrames(bool showUndistortedProjectorFrame, bool showrectifiedProjectorFrame) {
 	cv::namedWindow("PROJECTOR", cv::WINDOW_NORMAL);
 	cv::moveWindow("PROJECTOR", this->primaryScreenResolution.width, 0);
 	cv::setWindowProperty("PROJECTOR", cv::WND_PROP_FULLSCREEN, cv::WINDOW_FULLSCREEN);
 
-	cv::namedWindow("PROJECTOR - UNDISTORTED", cv::WINDOW_NORMAL);
-	cv::moveWindow("PROJECTOR - UNDISTORTED", this->primaryScreenResolution.width, 0);
-	cv::setWindowProperty("PROJECTOR - UNDISTORTED", cv::WND_PROP_FULLSCREEN, cv::WINDOW_FULLSCREEN);
+	this->showUndistortedProjectorFrame = showUndistortedProjectorFrame;
+	this->showrectifiedProjectorFrame = showrectifiedProjectorFrame;
 
-	cv::namedWindow("PROJECTOR - RECTIFIED", cv::WINDOW_NORMAL);
-	cv::moveWindow("PROJECTOR - RECTIFIED", this->primaryScreenResolution.width, 0);
-	cv::setWindowProperty("PROJECTOR - RECTIFIED", cv::WND_PROP_FULLSCREEN, cv::WINDOW_FULLSCREEN);
+	if (showUndistortedProjectorFrame)
+	{
+		cv::namedWindow("PROJECTOR - UNDISTORTED", cv::WINDOW_NORMAL);
+		cv::moveWindow("PROJECTOR - UNDISTORTED", this->primaryScreenResolution.width, 0);
+		cv::setWindowProperty("PROJECTOR - UNDISTORTED", cv::WND_PROP_FULLSCREEN, cv::WINDOW_FULLSCREEN);
+	}
+
+	if (showrectifiedProjectorFrame)
+	{
+		cv::namedWindow("PROJECTOR - RECTIFIED", cv::WINDOW_NORMAL);
+		cv::moveWindow("PROJECTOR - RECTIFIED", this->primaryScreenResolution.width, 0);
+		cv::setWindowProperty("PROJECTOR - RECTIFIED", cv::WND_PROP_FULLSCREEN, cv::WINDOW_FULLSCREEN);
+	}
 	return;
 }
 
 void CalibrationHandler::DisplayFrames() {
 	imshow("PROJECTOR", this->projectorFrame);
-	imshow("PROJECTOR - UNDISTORTED", this->undistortedProjectorFrame);
+	if(this->showUndistortedProjectorFrame)
+		imshow("PROJECTOR - UNDISTORTED", this->undistortedProjectorFrame);
+	if(this->showrectifiedProjectorFrame)
 	imshow("PROJECTOR - RECTIFIED", this->rectifiedProjectorFrame);
 }
 
@@ -130,7 +141,7 @@ void CalibrationHandler::CreateChessBoardPatternImages()
 			this->generatedCalibrationPatternPoints.push_back(newCalibrationPatternPoints);
 
 			imshow("PROJECTOR", searchPattern);
-			cv::waitKey(this->delay);
+			cv::waitKey((this->delay) / 4);														// just reducing the delay, nothing else
 		}
 	}
 	return;
@@ -181,11 +192,11 @@ bool CalibrationHandler::GetCalibrationPatternPointsInCurrentFrame(KinectWrapper
 
 	if (this->downsampleFrame)
 	{
-		resize(in_out_kinectFrameData.registeredColorFrame, in_out_kinectFrameData.downsampledRegisteredColorFrame, cv::Size(), 1 / (float)in_out_kinectFrameData.downsampleSize, 1 / (float)in_out_kinectFrameData.downsampleSize, CV_INTER_AREA);
-		cvtColor(in_out_kinectFrameData.downsampledRegisteredColorFrame, this->grayRegisteredColorFrame, cv::COLOR_BGR2GRAY);
+		cv::resize(in_out_kinectFrameData.registeredColorFrame, in_out_kinectFrameData.downsampledRegisteredColorFrame, cv::Size(), 1 / (float)in_out_kinectFrameData.downsampleSize, 1 / (float)in_out_kinectFrameData.downsampleSize, cv::INTER_AREA);
+		cv::cvtColor(in_out_kinectFrameData.downsampledRegisteredColorFrame, this->grayRegisteredColorFrame, cv::COLOR_BGR2GRAY);
 	}
 	else
-		cvtColor(in_out_kinectFrameData.registeredColorFrame, this->grayRegisteredColorFrame, cv::COLOR_BGR2GRAY);
+		cv::cvtColor(in_out_kinectFrameData.registeredColorFrame, this->grayRegisteredColorFrame, cv::COLOR_BGR2GRAY);
 
 	bool found = false;																										// if pattern is detected by opencv function
 	try
@@ -392,17 +403,11 @@ void CalibrationHandler::CollectCalibrationPatternPointsFromProjector(KinectWrap
 		{
 			in_out_kinectFrameData.UpdateDepthAndCameraSpaceMapping();
 
-			imshow("Kinect COLOR", in_out_kinectFrameData.colorStream);																		// Show color image
-			imshow("Kinect DEPTH", in_out_kinectFrameData.depthStream);																		// Show depth image
-			imshow("Kinect REGISTERED COLOR", in_out_kinectFrameData.registeredColorFrame);													// Show registered color image
-
 			patternCaptured = this->GetCalibrationPatternPointsInCurrentFrame(in_out_kinectFrameData, countTotalFrames);
 			drawChessboardCorners(this->collectionOfCalibrationPatterns[i], this->calibrationPatternSize, this->generatedCalibrationPatternPoints[i], true);
 			imshow("PROJECTOR", this->collectionOfCalibrationPatterns[i]);													// Show chessboard image
 
-																															// delay for view
 			cv::waitKey(this->delay);
-
 			std::vector<cv::Point2f> sourcePoints, destinationPoints;
 
 			if (patternCaptured && this->detectedCalibrationPatternPointsInCameraFrame.size() > 0)
@@ -418,7 +423,7 @@ void CalibrationHandler::CollectCalibrationPatternPointsFromProjector(KinectWrap
 						std::cout << std::setw(4) << std::setprecision(4) << "#" << i << " (x, y) = " << sourcePoints[i].x << ", " << sourcePoints[i].y << " --> " << destinationPoints[i].x << ", " << destinationPoints[i].y << std::endl;
 					}
 
-					this->homography = cv::findHomography(sourcePoints, destinationPoints);
+					this->homography = cv::findHomography(sourcePoints, destinationPoints, CV_RANSAC, 0.5);
 					cv::invert(this->homography, this->inverseHomography);
 					ApplyInverseHomographyAndWarpImage(in_out_kinectFrameData.registeredColorFrame, this->projectorFrame);
 					ApplyHomographyAndWarpPoints(this->detectedCalibrationPatternPointsInCameraFrame, this->detectedCalibrationPatternPointsInProjectorFrame);
@@ -439,7 +444,16 @@ void CalibrationHandler::CollectCalibrationPatternPointsFromProjector(KinectWrap
 				}
 			}
 
-			imshow("Kinect REGISTERED COLOR", in_out_kinectFrameData.registeredColorFrame);													// show registered color image
+			in_out_kinectFrameData.insetImage1 = in_out_kinectFrameData.allKinectFrames(cv::Rect(106, 32, 448, 252));
+			in_out_kinectFrameData.insetImage2 = in_out_kinectFrameData.allKinectFrames(cv::Rect(106, 316, 448, 371));
+			in_out_kinectFrameData.insetImage3 = in_out_kinectFrameData.allKinectFrames(cv::Rect(660, 148, in_out_kinectFrameData.registeredFrameWidth, in_out_kinectFrameData.registeredFrameHeight));
+
+			cv::resize(in_out_kinectFrameData.colorFrame, in_out_kinectFrameData.insetImage1, cv::Size(448, 252), 0, 0, cv::INTER_LINEAR);
+			cv::resize(in_out_kinectFrameData.depthFrame, in_out_kinectFrameData.insetImage2, cv::Size(448, 371), 0, 0, cv::INTER_LINEAR);
+			in_out_kinectFrameData.registeredColorFrame.copyTo(in_out_kinectFrameData.insetImage3);
+
+			cv::imshow("Kinect COLOR DEPTH and REGISTERED frames", in_out_kinectFrameData.allKinectFrames);
+			
 			this->chessboardSquareLengthInMeters = this->measurements.rmsLength;
 
 			delta = clock() - current;

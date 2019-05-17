@@ -1,3 +1,5 @@
-﻿  ProcamCalibration.cpp
-c:\users\syalanurag\documents\procamcalibration\procamcalibration\procamcalibration.cpp(88): warning C4552: '&': operator has no effect; expected operator with side-effect
-  ProcamCalibration.vcxproj -> C:\Users\syalanurag\Documents\ProcamCalibration\x64\Debug\ProcamCalibration.exe
+﻿  CalibrationHandler.cpp
+d:\procamcalibration\procamcalibration\calibrationhandler.cpp(285): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\procamcalibration\procamcalibration\calibrationhandler.cpp(286): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+d:\procamcalibration\procamcalibration\calibrationhandler.cpp(394): warning C4244: '=': conversion from 'clock_t' to 'float', possible loss of data
+  ProcamCalibration.vcxproj -> D:\ProcamCalibration\x64\Debug\ProcamCalibration.exe

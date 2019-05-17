@@ -126,10 +126,12 @@
     <ClCompile Include="CalibrationHandler.cpp" />
     <ClCompile Include="KinectWrapper.cpp" />
     <ClCompile Include="ProcamCalibration.cpp" />
+    <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CalibrationHandler.h" />
     <ClInclude Include="KinectWrapper.h" />
+    <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

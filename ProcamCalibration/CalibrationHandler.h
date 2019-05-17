@@ -27,6 +27,7 @@ private:
 	cv::Mat grayRegisteredColorFrame;
 
 	float current, delta, fpsOfDetection;
+	bool showUndistortedProjectorFrame = false, showrectifiedProjectorFrame = false;
 
 public:
 	// Calibration pattern variables
@@ -40,7 +41,7 @@ public:
 
 	// Calibration helper variables
 	UINT maxCaptureAttempts = 5;
-	UINT delay = 100;
+	UINT delay = 200;														// keep delay at 100 ms minimum for best aquisition of points
 	bool downsampleFrame, fastCheck, manualMode, showResults, showLogs;
 
 	// Calibration process vairables
@@ -91,7 +92,7 @@ public:
 	~CalibrationHandler();
 
 	void CalculateAndSetChessboardSquareEdgeLengthInpixels();
-	void CreateWindowsForDisplayingFrames();
+	void CreateWindowsForDisplayingFrames(bool showUndistortedProjectorFrame, bool showrectifiedProjectorFrame);
 	void DisplayFrames();
 	void DisplayFrames(bool displayProjectorFrame, bool displayUndistortedProjectorFrame, bool displayRectifiedProjectorFrame);
 	void CreateChessBoardPatternImages();

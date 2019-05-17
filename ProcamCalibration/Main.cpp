@@ -518,7 +518,7 @@ void UpdateDepthAndCameraSpaceMapping(KinectFrameData& in_out_kinectFrameData)
 	}
 
 	memcpy(in_out_kinectFrameData.colorStream.data, in_out_kinectFrameData.colorData, in_out_kinectFrameData.colorFrameDataLength);
-	//memcpy(in_out_kinectFrameData.depthStream.data, in_out_kinectFrameData.vizDepthData, in_out_kinectFrameData.depthDataLength);
+	//memcpy(in_out_kinectFrameData.depthFrame.data, in_out_kinectFrameData.vizDepthData, in_out_kinectFrameData.depthDataLength);
 	memcpy(in_out_kinectFrameData.depthStream.data, in_out_kinectFrameData.vizDepthData, in_out_kinectFrameData.registeredColorFrameDataLength);
 	memcpy(in_out_kinectFrameData.registeredColorFrame.data, in_out_kinectFrameData.registeredColorData, in_out_kinectFrameData.registeredColorFrameDataLength);
 	flip(in_out_kinectFrameData.registeredColorFrame, in_out_kinectFrameData.registeredColorFrame, 1);
@@ -851,8 +851,8 @@ int main(int argc, char* argv[]) {
 	Size maxChessboardOffset = Size(maxOffsetX, maxOffsetY);
 
 	/*CollectCalibrationPatternPoints(
-	colorDataLength, colorData, colorStream,
-	depthDataLength, rawDepthData, vizDepthData, depthStream,
+	colorDataLength, colorData, colorFrame,
+	depthDataLength, rawDepthData, vizDepthData, depthFrame,
 	registeredColorDataLength, registeredColorData, registeredColorFrame,
 	coordinateMapper, colorSpacePoints, cameraSpacePoints,
 	allDetectedPatternPoints, numberOfFramesWithPatternToDetect,
@@ -935,7 +935,7 @@ int main(int argc, char* argv[]) {
 		GetLatestColorDataFromKinect(kinectFrameData) & GetLatestDepthDataFromKinect(kinectFrameData);
 		UpdateDepthAndCameraSpaceMapping(kinectFrameData);
 		warpPerspective(kinectFrameData.registeredColorFrame, projectorFrame, homography, projectorFrame.size());
-		//warpPerspective(depthStream, tempResultPlaceholder, homography, tempResultPlaceholder.size());
+		//warpPerspective(depthFrame, tempResultPlaceholder, homography, tempResultPlaceholder.size());
 
 		imshow("Kinect COLOR", kinectFrameData.colorStream);																		// Show color image
 		imshow("Kinect DEPTH", kinectFrameData.depthStream);																		// Show depth image
