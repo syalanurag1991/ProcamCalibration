@@ -1,5 +1,6 @@
-﻿  CalibrationHandler.cpp
-d:\procamcalibration\procamcalibration\calibrationhandler.cpp(285): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-d:\procamcalibration\procamcalibration\calibrationhandler.cpp(286): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-d:\procamcalibration\procamcalibration\calibrationhandler.cpp(394): warning C4244: '=': conversion from 'clock_t' to 'float', possible loss of data
+﻿  ProcamCalibration.cpp
+d:\procamcalibration\procamcalibration\procamcalibration.cpp(3): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  Utilities.cpp
+d:\procamcalibration\procamcalibration\utilities.cpp(52): warning C4552: '&': result of expression not used
+  Generating Code...
   ProcamCalibration.vcxproj -> D:\ProcamCalibration\x64\Debug\ProcamCalibration.exe
